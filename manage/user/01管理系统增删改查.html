@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>我的</title>
+  <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css">
+  <style>
+    .table th,
+    .table td {
+      text-align: center;
+    }
+
+    .loading {
+      width: 100%;
+      height: 100%;
+      border-radius: 5px;
+      background: url("images/loading.gif") center center no-repeat;
+      background-color: rgba(0, 0, 0, 0.3);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 9999;
+      display: none;
+    }
+
+    .btn-loading,
+    .btn-loading:hover {
+      background-image: url("images/loading.gif");
+      background-position: center;
+      background-repeat: no-repeat;
+      color: transparent;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="loading"></div>
+  <!-- 导航条 -->
+  <nav class="navbar navbar-inverse">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">黑马学生管理系统</a>
+      </div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+            <a href="#">Copyright © 2018</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- 内容区域 -->
+  <div class="container">
+    <div class="panel panel-default">
+      <div class="panel-heading clearfix">
+        <h4 class="pull-left">学生基本信息管理</h4>
+        <button class="btn btn-primary pull-right btn_add">添加学生信息</button>
+      </div>
+      <div class="panel-body">
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th width="5%">序号</th>
+              <th width="10%">姓名</th>
+              <th width="10%">性别</th>
+              <th width="15%">所属学院</th>
+              <th width="30%">个人简介</th>
+              <th width="20%">录入时间</th>
+              <th width="10%">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 挖个坑 -->
+          </tbody>
+        </table>
+        <!-- 分页的盒子 -->
+        <div class="text-right">
+          <ul id="paginator"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 删除模态框 -->
+  <div class="modal fade" tabindex="-1" id="deleteModal">
+    <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+          <h4 class="modal-title">删除学生信息</h4>
+        </div>
+        <div class="modal-body">
+          <p class="text-danger">你是否要确定删除该学生的信息？</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary btn_delete">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 增加的模态框 -->
+  <div class="modal fade" tabindex="-1" id="addModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+          <h4 class="modal-title">增加学生信息</h4>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="请输入学生的姓名" name="name">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="请输入学生的性别" name="sex">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" placeholder="请输入学生的学院" name="academy">
+            </div>
+            <div class="form-group">
+              <textarea class="form-control" rows="3" placeholder="请输入学生的描述" name="introduce"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary btn_confirm">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 修改的模态框 -->
+  <div class="modal fade" tabindex="-1" id="editModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+          <h4 class="modal-title">修改学生信息</h4>
+        </div>
+        <div class="modal-body">
+          <form>
+            <!-- 修改需要一个id -->
+            <input type="hidden" name="id" id="id">
+            <div class="form-group">
+              <input type="text" id="name" class="form-control" placeholder="请输入学生的姓名" name="name">
+            </div>
+            <div class="form-group">
+              <input type="text" id="sex" class="form-control" placeholder="请输入学生的性别" name="sex">
+            </div>
+            <div class="form-group">
+              <input type="text" id="academy" class="form-control" placeholder="请输入学生的学院" name="academy">
+            </div>
+            <div class="form-group">
+              <textarea class="form-control" id="introduce" rows="3" placeholder="请输入学生的描述" name="introduce"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+          <button type="button" class="btn btn-primary btn_edit">确定</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="lib/jquery/jquery-1.12.4.js"></script>
+  <script src="lib/bootstrap/js/bootstrap.js"></script>
+  <script src="lib/artTemplate/template-web.js"></script>
+  <script src="lib/bootstrap-paginator/bootstrap-paginator.js"></script>
+
+  <script type="text/html" id="tpl">
+    {{each list v i}}
+    <tr>
+      <td>{{ (pageNum -1)*pageSize +i + 1 }}</td>
+      <td>{{v.name}}</td>
+      <td>{{v.sex}}</td>
+      <td>{{v.academy}}</td>
+      <td>{{v.introduce}}</td>
+      <td>{{v.createTime}}</td>
+      <td>
+        <a href="javascript:;" class="edit" data-id="{{v.id}}">修改</a>
+        <a href="javascript:;" class="delete" data-id="{{v.id}}">删除</a>
+      </td>
+    </tr>
+    {{/each}}
+  </script>
+  <script>
+    var pageNum = 1;
+    var pageSize = 10;
+
+    function render() {
+      $.ajax({
+        type: "get",
+        url: "../api/findUsers.php",
+        data: {
+          pageNum: pageNum,
+          pageSize: pageSize
+        },
+        beforeSend: function () {
+          $(".loading").show();
+          $(".loading").addClass("btn-loading");
+        },
+        success: function (info) {
+          //console.log(info);
+          var html = template("tpl", info);
+          $("tbody").html(html);
+
+          $("#paginator").bootstrapPaginator({
+            bootstrapMajorVersion: 3,
+            size: "small",
+            currentPage: pageNum,
+            totalPages: Math.ceil(info.total / info.pageSize),
+            onPageClicked: function (a, b, c, page) {
+              pageNum = page;
+              render();
+            }
+          });
+          $(".loading").hide();
+
+        }
+      })
+    }
+    render();
+
+    $("tbody").on("click", ".delete", function () {
+      $("#deleteModal").modal("show");
+      var id = $(this).data("id");
+      $(".btn_delete").off().on("click", function () {
+        $("#deleteModal").modal("hide");
+        $.ajax({
+          type: "post",
+          url: "../api/removeUser.php",
+          data: { id: id },
+          beforeSend: function () {
+            $(".btn_delete").addClass("btn-loading");
+          },
+          success: function (info) {
+            if (info.status === "ok") {
+              render();
+            }
+          }
+        })
+
+      })
+    })
+
+    $(".btn_add").on("click",function(){
+      $("#addModal").modal("show");
+    })
+
+    $(".btn_confirm").on("click",function(){
+      $.ajax({
+        type:"post",
+        url:"../api/saveUser.php",
+        data:$("#addModal form").serialize(),
+        success:function(info){
+          
+          if(info.status==="ok"){
+            render();
+            pageNum=1;
+          }
+          $("#addModal form")[0].reset();
+        }
+      })
+    })
+
+
+    $("tbody").on("click",".edit",function(){   
+      var id= $(this).data("id");   
+     
+      $.ajax({
+        type:"get",
+        url:"../api/findUserById.php",
+        data:{
+          id:id
+        },
+        success:function(info){
+          console.log(info);
+          $("#id").val(info.id);
+          $("#name").val(info.name);
+          $("#sex").val(info.sex);
+          $("#academy").val(info.academy);
+          $("#introduce").val(info.introduce);
+          $("#editModal").modal("show");
+        }
+
+      })
+    })
+
+    $(".btn_edit").on("click",function(){
+      
+      
+      
+      $.ajax({
+        type:"post",
+        url:"../api/updateUser.php",
+        data:$("#editModal form").serialize(),
+        beforeSend:function(){
+          $(".loading").show();
+          $(".loading").addClass("btn-loading");
+        },
+        success:function(info){
+          $("#editModal").modal("hide");
+          render();
+          // $("#editModal form")[0].reset();
+          $(".loading").removeClass("btn-loading");
+          
+             
+        }
+        
+
+      })
+    })
+
+
+
+
+
+
+  </script>
+
+</body>
+
+</html>
